@@ -68,12 +68,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "Derivatives-UI:build:production",
-              "host": "localhost"
+              "browserTarget": "Derivatives-UI:build:production"
             },
             "development": {
-              "browserTarget": "Derivatives-UI:build:development",
-               "host": "localhost"
+              "browserTarget": "Derivatives-UI:build:development"
             }
           },
           "defaultConfiguration": "development"
