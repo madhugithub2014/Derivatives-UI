@@ -1,11 +1,23 @@
-### STAGE 1: Build ###
-FROM node:18.16.1 AS build
-WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
+# ----------------------------
+# build from source
+# ----------------------------
+FROM node:18 AS build
+
+WORKDIR /app
+
+COPY package*.json .
 RUN npm install
+
 COPY . .
 RUN npm run build
-### STAGE 2: Run ###
-FROM nginx:1.17.1-alpine
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /usr/src/app/dist/derivatives-ui /usr/share/nginx/html
+
+# ----------------------------
+# run with nginx
+# ----------------------------
+FROM nginx
+
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d
+COPY --from=build /app/dist/derivatives-ui /usr/share/nginx/html
+
+EXPOSE 80
