@@ -8,6 +8,9 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 })
 export class MonteCarloSimulationComponent {
 
+  title = 'MCS validation';
+  simulationPathList = ['10k', '1k', '100k'];
+
   monteCarloSimulationForm = new FormGroup({
     symbol: new FormControl('', Validators.required),
     currentMarketPrices: new FormControl('', Validators.required),

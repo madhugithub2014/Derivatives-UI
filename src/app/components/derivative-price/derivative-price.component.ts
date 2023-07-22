@@ -8,6 +8,8 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 })
 export class DerivativePriceComponent {
 
+  title = 'Price Prediction';
+
   priceDerivativeForm = new FormGroup({
     symbol: new FormControl('', Validators.required),
     currentMarketPrices: new FormControl('', Validators.required),
