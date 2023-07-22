@@ -3,7 +3,7 @@ name: ui
 on:
   push:
     branches:
-      - "develop"
+      - "feature/mrinalika-changes"
 
 jobs:
   build:
