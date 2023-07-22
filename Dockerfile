@@ -7,4 +7,4 @@ RUN npm run build
 # Serve Application using Nginx Server
 FROM nginx:alpine
 COPY --from=build /app/dist/derivatives-ui/ /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 9000
