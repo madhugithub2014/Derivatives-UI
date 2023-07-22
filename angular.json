@@ -3,11 +3,11 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Derivatives-UI": {
+    "priceDerivatives": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "scss"
         }
       },
       "root": "",
@@ -17,20 +17,20 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/derivatives-ui",
+            "outputPath": "dist/price-derivatives",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "sass",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -63,15 +63,12 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "project:build",            
-          },
           "configurations": {
             "production": {
-              "browserTarget": "Derivatives-UI:build:production"
+              "browserTarget": "priceDerivatives:build:production"
             },
             "development": {
-              "browserTarget": "Derivatives-UI:build:development"
+              "browserTarget": "priceDerivatives:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Derivatives-UI:build"
+            "browserTarget": "priceDerivatives:build"
           }
         },
         "test": {
@@ -90,18 +87,21 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "sass",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.scss"
             ],
             "scripts": []
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b58fd0a4-1b26-4812-b087-5343df70c625"
   }
 }
