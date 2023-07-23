@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   workflow_run:
-    workflows: [ui]
+    workflows: [Build-docker-image]
     types:
       - completed
 
