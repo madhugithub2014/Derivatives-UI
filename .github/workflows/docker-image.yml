@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'feature/mrinalika-changes'
-      - '!develop'
-      - '!main'
 
 jobs:
   build:
