@@ -6,7 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-
+import { HttpClientModule } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,8 +33,9 @@ import { MonteCarloSimulationService } from './services/monte-carlo-simulation.s
     MatFormFieldModule,
     MatSelectModule,
     MatDatepickerModule,
+    HttpClientModule
   ],
-  providers: [DerivativePriceService,MonteCarloSimulationService],
+  providers: [DerivativePriceService,MonteCarloSimulationService,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

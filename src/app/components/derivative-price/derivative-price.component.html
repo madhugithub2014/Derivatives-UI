@@ -2,52 +2,58 @@
     <div class="toolbar">
         <h1>{{title}}</h1>
     </div>
-    <div class="row custom-wrapper">
-        <div class="col-md-12">
-            <form [formGroup]="priceDerivativeForm" >
-                <div class="group-gap">
-					<div class="d-block my-3">
-                        <div class="mb-3">
-                            <p class="inp-head-option">Symbol</p>
-                            <select class="custom-select" formControlName="symbol">
-                                <option value="">Choose symbol</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <p class="inp-head-option">Current Market Prices</p>
-                            <input class="custom-select" type="number" min="0" max="10" step="0.25" value="0.00" formControlName="currentMarketPrices" />
-                        </div>
-                        <div class="mb-3">
-                            <p class="inp-head-option">Exercise Price/Strike Price</p>
-                            <input class="custom-select" type="number" formControlName="strikePrices" />
-                        </div>
-                        <div class="mb-3">
-                            <p class="inp-head-option">Date of Transaction</p>
-                            <input class="custom-select" type="date" id="date" formControlName="dateOfTransaction"/>
-                        </div>
-                        <div class="mb-3">
-                            <p class="inp-head-option">Expiration Date</p>
-                            <input class="custom-select" type="date" id="date" formControlName="expirationDate"/>
-                        </div>
-                        <div class="mb-3">
-                            <p class="inp-head-option">Implied Volatility(%)</p>
-                            <input class="custom-select"  type="number" min="0" max="10" step="0.25" value="0.00" formControlName="impliedVolatilityPercentage"/>
-                        </div>
-                        <div class="mb-3">
-                            <p class="inp-head-option">Option Type</p>
-                            <input class="radio" type="radio" value="call" id="radio1" formControlName="optionType"/>
-                            <label for="radio1"> call </label>
-                            <input class="radio" type="radio" value="put" id="radio2" formControlName="optionType"/>
-                            <label for="radio2"> put </label>
-                        </div>
-                        <div class="col-12 col-sm-12">
-                            <div class="input-group">
-                               <a  id="btn_sub" class="btn brand-btn margin-bottom-30 mr-5">Calculate Premium</a>        
+    <div class="float-child">
+        <div class="row custom-wrapper">
+            <div class="col-md-12">
+                <form [formGroup]="priceDerivativeForm" >
+                    <div class="group-gap">
+                        <div class="d-block my-3">
+                            <div class="mb-3">
+                                <p class="inp-head-option">Symbol</p>
+                                <select class="custom-select" formControlName="symbol" (change)="getSymbolDetail()" [(ngModel)]="selectedSymbol">
+                                    <option value="">Choose symbol</option>
+                                    <option *ngFor="let list of symbols"  [value]="list">
+                                        {{list}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <p class="inp-head-option">Current Market Prices</p>
+                                <input class="custom-select" type="number" formControlName="currentMarketPrices" />
+                            </div>
+                            <div class="mb-3">
+                                <p class="inp-head-option">Exercise Price/Strike Price</p>
+                                <input class="custom-select" type="number" formControlName="strikePrices" />
+                            </div>
+                            <div class="mb-3">
+                                <p class="inp-head-option">Date of Transaction</p>
+                                <input class="custom-select" type="date" id="date" formControlName="dateOfTransaction"/>
+                            </div>
+                            <div class="mb-3">
+                                <p class="inp-head-option">Expiration Date</p>
+                                <input class="custom-select" type="date" id="date" formControlName="expirationDate"/>
+                            </div>
+                            <div class="mb-3">
+                                <p class="inp-head-option">Implied Volatility(%)</p>
+                                <input class="custom-select"  type="number" formControlName="impliedVolatilityPercentage"/>
+                            </div>
+                            <div class="col-12 col-sm-12">
+                                <div class="input-group">
+                                    <a  id="btn_sub" class="btn brand-btn margin-bottom-30 mr-5" (click)="postPredictData()">
+                                        Calculate Premium
+                                    </a>        
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
+    </div>
+    <div class="float-child">
+        <form [formGroup]="resultForm" >
+            <p class="inp-head-option">Value of Call</p>
+            <input class="custom-select"  type="text" formControlName="valueOfCall">
+        </form>
     </div>
 </div>

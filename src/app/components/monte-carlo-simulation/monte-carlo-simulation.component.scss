@@ -76,3 +76,19 @@ label {
         margin-top: 15px;
     }
 }
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 20px;
+}  
+
+input[type=text] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px;
+    margin-top: 8px;
+}
+.inp-head-option {
+    color: white;
+}
