@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class MonteCarloSimulationService {
 
-  apiUrl:string = 'http://127.0.0.1:5015';
+  apiUrl:string = 'http://localhost:5015';
 
   constructor(private http: HttpClient) { }
 
