@@ -97,9 +97,15 @@ export class MonteCarloSimulationComponent {
       "strikePrice": Number(strikePriceValue),
       "spotPrice": Number(spotPriceValue),
       "time": timeToExpiry,
+<<<<<<< HEAD
       "volatility": Number(monteCarloObj.impliedVolatilityPercentage)/100,
       "steps": 100,
       "trials": Number(monteCarloObj.simulationPathList)
+=======
+      "volatility": Number(monteCarloObj.impliedVolatilityPercentage),
+      "steps": 200,
+      "trials": Number(monteCarloObj.simulationPathList)      
+>>>>>>> 373198f3eb6dadb1b7a5f96a052abd3e5b03b491
     }
     this.subscription.push(this.service.postCallOptionPrice(Obj).subscribe((res) => {
       this.value = parseFloat(res).toFixed(2);
