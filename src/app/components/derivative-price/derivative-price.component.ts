@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { DerivativePriceService } from '../../services/derivative-price.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, CurrencyPipe } from '@angular/common';
 import { formatDate } from '@angular/common' 
 import { Subscription } from 'rxjs';
 
@@ -15,9 +15,10 @@ interface Post {
   templateUrl: './derivative-price.component.html',
   styleUrls: ['./derivative-price.component.scss']
 })
-export class DerivativePriceComponent {
+export class DerivativePriceComponent implements OnInit{
   private subscription: Subscription[] =[];
-  constructor(private service: DerivativePriceService, private datePipe : DatePipe) {}
+  constructor(private service: DerivativePriceService, private datePipe : DatePipe,
+    private currencyPipe: CurrencyPipe) {}
   submitted = false;
   
   symbols: any [] = [];
@@ -25,6 +26,7 @@ export class DerivativePriceComponent {
   priceDerivativeResult: any;
   result: any = {};
   value: any;
+  defaultCurrentMarketPrice: any = 0.00;
 
   post: Post = {
     startDate: new Date(Date.now()),
@@ -40,21 +42,30 @@ export class DerivativePriceComponent {
   }
 
   ngOnInit() {
-   this.loadSymbol();
+    this.loadSymbol();
   }
 
   priceDerivativeForm = new FormGroup({
     symbol: new FormControl('', Validators.required),
-    currentMarketPrice: new FormControl('0', 
-    Validators.compose([Validators.required, Validators.minLength(1), Validators.maxLength(20), 
-      Validators.pattern('\d+([.]\d+)?')])),
-    strikePrice: new FormControl('0', Validators.required),
+    currentMarketPrice: new FormControl(this.currencyPipe.transform('0'), Validators.required),
+    strikePrice: new FormControl( this.currencyPipe.transform('0'), Validators.required),
     dateOfTransaction: new FormControl(formatDate(this.post.startDate, 'yyyy-MM-dd', 'en'), Validators.required),
     expirationDate: new FormControl(formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'), Validators.required),
     impliedVolatilityPercentage: new FormControl('0', 
     Validators.compose([Validators.required, Validators.minLength(1), Validators.maxLength(20), 
       Validators.pattern('\d+([.]\d+)?')]))
   });
+
+  resetForm() {
+    this.priceDerivativeForm.patchValue({
+      symbol: '',
+      currentMarketPrice: this.currencyPipe.transform('0'),
+      strikePrice: this.currencyPipe.transform('0'),
+      dateOfTransaction : formatDate(this.post.startDate, 'yyyy-MM-dd', 'en'),
+      expirationDate: formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'),
+      impliedVolatilityPercentage: '0'
+    })
+  }
 
   resultForm = new FormGroup ({
     valueOfCall: new FormControl('', Validators.maxLength(30))
@@ -68,16 +79,19 @@ export class DerivativePriceComponent {
 
   postPredictData() {
     let priceDerivativeObj = this.priceDerivativeForm.getRawValue();
-    let diff = this.diffFormula(priceDerivativeObj.currentMarketPrice, priceDerivativeObj.strikePrice);
+    let strikePriceValue =  priceDerivativeObj.strikePrice?.slice(1);
+    let spotPriceValue = priceDerivativeObj.currentMarketPrice?.slice(1);
+    let diff = this.diffFormula(Number(spotPriceValue), Number(strikePriceValue));
     let daysDiff = this.daysDiffFormula(priceDerivativeObj.expirationDate, priceDerivativeObj.dateOfTransaction);
     let timeToExpiry = this.timeToExpiryFormula(daysDiff);
+    
     let Obj = {
-      "strike_price": priceDerivativeObj.strikePrice,
-      "spot_price": priceDerivativeObj.currentMarketPrice,
+      "strike_price": Number(strikePriceValue),
+      "spot_price": Number(spotPriceValue),
       "bid_ask": 0,
       "diff": diff,
       "orders": 0,
-      "days_diff": daysDiff,
+      "days_diff": 0,
       "time_to_expiry": timeToExpiry,
       "implied_volatility": Number(priceDerivativeObj.impliedVolatilityPercentage)
     }
@@ -100,8 +114,8 @@ export class DerivativePriceComponent {
       let mydate = this.parseLastTradeDate(this.result.lastTradeDate);
       console.log("check:"+mydate);
       this.priceDerivativeForm.patchValue({
-        currentMarketPrice: this.result.currentPrice,
-        strikePrice: this.result.strikePrice,
+        currentMarketPrice: this.currencyPipe.transform(this.result.currentPrice),
+        strikePrice: this.currencyPipe.transform(this.result.strikePrice),
         dateOfTransaction : formatDate(mydate, "yyyy-MM-dd", 'en'),
         expirationDate: this.formatExpirationDate(this.result.expiryDate),
         impliedVolatilityPercentage: this.parseVolatilityValue(this.result.impliedVolatility)
@@ -144,7 +158,7 @@ export class DerivativePriceComponent {
   }
 
   diffFormula(spot: any, strike: any) {
-    let diff = ((strike - spot) /strike) * 100;
+    let diff = Math.abs(((spot - strike) /spot) * 100);
     return diff;
   }
 
@@ -165,4 +179,5 @@ export class DerivativePriceComponent {
   get priceDerivativeFormControl() {
     return this.priceDerivativeForm.controls;
   }
+  
 }

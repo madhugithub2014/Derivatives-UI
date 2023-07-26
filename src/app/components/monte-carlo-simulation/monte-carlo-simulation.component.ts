@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { MonteCarloSimulationService } from '../../services/monte-carlo-simulation.service';
 import { DerivativePriceService } from '../../services/derivative-price.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, CurrencyPipe } from '@angular/common';
 import { formatDate } from '@angular/common' 
 import { Subscription } from 'rxjs';
 
@@ -18,14 +18,16 @@ interface Post {
 })
 export class MonteCarloSimulationComponent {
   private subscription: Subscription[] =[];
-  constructor(private dpservice: DerivativePriceService, private service: MonteCarloSimulationService, private datePipe : DatePipe) {}
+  constructor(private dpservice: DerivativePriceService, 
+    private service: MonteCarloSimulationService, private datePipe : DatePipe,
+    private currencyPipe: CurrencyPipe) {}
  
   simulationPathList = [{path: '10k', steps: '10000'}, {path: '1k', steps: '1000'}, {path: '100k', steps: '100000'}];
   submitted = false;
   symbols: any [] = [];
-  selectedSymbol: string = '';
   result: any = {};
   value: any;
+  priceDerivativeResult: string = '';
 
   post: Post = {
     startDate: new Date(Date.now()),
@@ -42,16 +44,15 @@ export class MonteCarloSimulationComponent {
 
   ngOnInit() {
     this.setSymbolDetail();
+    this.getprictionValuefromPriceDerivatives();
   }
 
 
 
   monteCarloSimulationForm = new FormGroup({
-    symbol: new FormControl('', Validators.required),
-    currentMarketPrice: new FormControl('0', 
-    Validators.compose([Validators.required, Validators.minLength(1), Validators.maxLength(20), 
-      Validators.pattern('\d+([.]\d+)?')])),
-    strikePrice: new FormControl('0', Validators.required),
+    symbol: new FormControl('Symbol', Validators.required),
+    currentMarketPrice: new FormControl(this.currencyPipe.transform('0'), Validators.required),
+    strikePrice: new FormControl(this.currencyPipe.transform('0'), Validators.required),
     dateOfTransaction: new FormControl(formatDate(this.post.startDate, 'yyyy-MM-dd', 'en'), Validators.required),
     expirationDate: new FormControl(formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'), Validators.required),
     impliedVolatilityPercentage: new FormControl('0', 
@@ -60,14 +61,26 @@ export class MonteCarloSimulationComponent {
     simulationPathList: new FormControl(this.simulationPathList[0].steps, Validators.required)
   });
 
+  resetForm() {
+    this.monteCarloSimulationForm.patchValue({
+      symbol: 'Symbol',
+      currentMarketPrice: this.currencyPipe.transform('0'),
+      strikePrice: this.currencyPipe.transform('0'),
+      dateOfTransaction : formatDate(this.post.startDate, 'yyyy-MM-dd', 'en'),
+      expirationDate: formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'),
+      impliedVolatilityPercentage: '0',
+      simulationPathList: this.simulationPathList[0].steps
+    })
+  }
+
   setSymbolDetail() {
     this.dpservice.symbolList.subscribe((resp) => {
       console.log("data from first :" + resp);
       this.result = resp;
       this.monteCarloSimulationForm.patchValue({
         symbol: this.result.symbol,
-        currentMarketPrice: this.result.currentMarketPrice,
-        strikePrice: this.result.strikePrice,
+        currentMarketPrice: this.currencyPipe.transform(this.result.currentMarketPrice),
+        strikePrice: this.currencyPipe.transform(this.result.strikePrice),
         dateOfTransaction :  this.result.dateOfTransaction,
         expirationDate:  this.result.expirationDate,
         impliedVolatilityPercentage:  this.result.impliedVolatilityPercentage
@@ -77,24 +90,23 @@ export class MonteCarloSimulationComponent {
 
   postPredictData() {
     let monteCarloObj = this.monteCarloSimulationForm.getRawValue();
+    let strikePriceValue =  monteCarloObj.strikePrice?.slice(1);
+    let spotPriceValue = monteCarloObj.currentMarketPrice?.slice(1);
     let timeToExpiry = this.timeToExpiryFormula(monteCarloObj.expirationDate, monteCarloObj.dateOfTransaction);
     let Obj = {
-      "strikePrice": monteCarloObj.strikePrice,
-      "spotPrice": monteCarloObj.currentMarketPrice,
+      "strikePrice": Number(strikePriceValue),
+      "spotPrice": Number(spotPriceValue),
       "time": timeToExpiry,
-      "volatility": Number(monteCarloObj.impliedVolatilityPercentage),
-      "steps": Number(monteCarloObj.simulationPathList),
-      "trials": 1000      
+      "volatility": Number(monteCarloObj.impliedVolatilityPercentage)/100,
+      "steps": 100,
+      "trials": Number(monteCarloObj.simulationPathList)
     }
     this.subscription.push(this.service.postCallOptionPrice(Obj).subscribe((res) => {
       this.value = parseFloat(res).toFixed(2);
       this.resultForm.patchValue({
         valueOfCall:  this.value 
       });
-    }))
-    this.dpservice.valueOfCallResult.subscribe((resp) => {
-      console.log(resp);
-    });
+    }));
   }
 
   timeToExpiryFormula(expirationDate: any, dateOfTransaction: any) {
@@ -103,6 +115,12 @@ export class MonteCarloSimulationComponent {
     const diffTime = Math.abs(expDate - transDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays/250;
+  }
+
+  getprictionValuefromPriceDerivatives() {
+    this.dpservice.valueOfCallResult.subscribe((resp) => {
+      this.priceDerivativeResult = resp;
+    });
   }
 
   resultForm = new FormGroup ({

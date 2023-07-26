@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,7 +36,7 @@ import { MonteCarloSimulationService } from './services/monte-carlo-simulation.s
     MatDatepickerModule,
     HttpClientModule
   ],
-  providers: [DerivativePriceService,MonteCarloSimulationService,DatePipe],
+  providers: [DerivativePriceService,MonteCarloSimulationService,DatePipe,CurrencyPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

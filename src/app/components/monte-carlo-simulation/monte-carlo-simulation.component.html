@@ -6,12 +6,12 @@
         </div>
         <div class="col-md-6">
           <label class="form-label">Current Market Price</label>
-          <input type="number" class="form-control" formControlName="currentMarketPrice">
+          <input type="text" class="form-control" formControlName="currentMarketPrice">
         </div>
         <div class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">Exercise Price/Strike Price</label>
-                <input type="number" class="form-control" formControlName="strikePrice">
+                <input type="text" class="form-control" formControlName="strikePrice">
             </div>
             <div class="col-md-4">
                 <label class="form-label">Date of Transaction</label>
@@ -37,12 +37,17 @@
             </div>
         </div>
         <div class="row g-3">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <a  id="btn_sub" class="btn brand-btn margin-bottom-30 mr-5" (click)="postPredictData()">
                     Calculate Premium
                 </a> 
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <a  class="btn brand-btn margin-bottom-30 mr-5" (click)="resetForm()">
+                    Clear
+                </a> 
+            </div>
+            <div class="col-md-4">
                 <form [formGroup]="resultForm" >
                     <input type="text" class="form-control" formControlName="valueOfCall">
                 </form>

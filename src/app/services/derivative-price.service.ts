@@ -10,7 +10,7 @@ export class DerivativePriceService {
   apiUrl:string = 'http://localhost:5015';
 
   symbolList = new EventEmitter<object>();
-  valueOfCallResult = new EventEmitter<any>();
+  valueOfCallResult = new EventEmitter<string>();
   constructor(private http: HttpClient) { }
 
   postPredictData(data: any): Observable<any>{
@@ -34,7 +34,7 @@ export class DerivativePriceService {
     this.symbolList.emit(data);
   }
 
-  valueofCallEmit(data:any) {
-    this.valueOfCallResult.emit(data);
+  valueofCallEmit(result:string) {
+    this.valueOfCallResult.emit(result);
   }
 }
