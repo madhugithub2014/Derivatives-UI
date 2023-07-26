@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
 
+  title1 = 'Price Prediction';
+  title2 = 'Monte Carlo Simulation validation';
 }

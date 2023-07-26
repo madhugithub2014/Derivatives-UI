@@ -1,8 +1,22 @@
-<div class="outer">
-  <div class="card">    
-    <app-derivative-price></app-derivative-price>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header">
+        {{title1}}
+      </div>
+      <div class="card-body">
+        <app-derivative-price></app-derivative-price>
+      </div>
+    </div>
   </div>
-  <div class="card">
-    <app-monte-carlo-simulation></app-monte-carlo-simulation>    
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header">
+        {{title2}}
+      </div>
+      <div class="card-body">
+        <app-monte-carlo-simulation></app-monte-carlo-simulation> 
+      </div>
+    </div>
   </div>
 </div>

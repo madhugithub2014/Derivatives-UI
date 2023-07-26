@@ -19,9 +19,10 @@ export class DerivativePriceComponent {
   private subscription: Subscription[] =[];
   constructor(private service: DerivativePriceService, private datePipe : DatePipe) {}
   submitted = false;
-  title = 'Price Prediction';
+  
   symbols: any [] = [];
   selectedSymbol: string = '';
+  priceDerivativeResult: any;
   result: any = {};
   value: any;
 
@@ -44,10 +45,10 @@ export class DerivativePriceComponent {
 
   priceDerivativeForm = new FormGroup({
     symbol: new FormControl('', Validators.required),
-    currentMarketPrices: new FormControl('0', 
+    currentMarketPrice: new FormControl('0', 
     Validators.compose([Validators.required, Validators.minLength(1), Validators.maxLength(20), 
       Validators.pattern('\d+([.]\d+)?')])),
-    strikePrices: new FormControl('0', Validators.required),
+    strikePrice: new FormControl('0', Validators.required),
     dateOfTransaction: new FormControl(formatDate(this.post.startDate, 'yyyy-MM-dd', 'en'), Validators.required),
     expirationDate: new FormControl(formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'), Validators.required),
     impliedVolatilityPercentage: new FormControl('0', 
@@ -67,17 +68,17 @@ export class DerivativePriceComponent {
 
   postPredictData() {
     let priceDerivativeObj = this.priceDerivativeForm.getRawValue();
-    //const date2 = new Date(priceDerivativeObj.expirationDate);
-    //const diffTime = Math.abs(date2 - date1);
-    //const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    let diff = this.diffFormula(priceDerivativeObj.currentMarketPrice, priceDerivativeObj.strikePrice);
+    let daysDiff = this.daysDiffFormula(priceDerivativeObj.expirationDate, priceDerivativeObj.dateOfTransaction);
+    let timeToExpiry = this.timeToExpiryFormula(daysDiff);
     let Obj = {
-      "strike_price": priceDerivativeObj.strikePrices,
-      "spot_price": priceDerivativeObj.currentMarketPrices,
+      "strike_price": priceDerivativeObj.strikePrice,
+      "spot_price": priceDerivativeObj.currentMarketPrice,
       "bid_ask": 0,
-      "diff": 0,
+      "diff": diff,
       "orders": 0,
-      "days_diff": 0,
-      "time_to_expiry": 255,
+      "days_diff": daysDiff,
+      "time_to_expiry": timeToExpiry,
       "implied_volatility": Number(priceDerivativeObj.impliedVolatilityPercentage)
     }
   
@@ -86,22 +87,34 @@ export class DerivativePriceComponent {
       this.resultForm.patchValue({
         valueOfCall:  this.value 
       });
+      this.priceDerivativeResult = this.value;
+      this.service.valueofCallEmit(this.priceDerivativeResult);
     }))
   }
 
   getSymbolDetail() {
+     
     this.service.getSymbolDetail(this.selectedSymbol).subscribe((response: any) => {
       console.log(response);
       this.result = response;
       let mydate = this.parseLastTradeDate(this.result.lastTradeDate);
       console.log("check:"+mydate);
       this.priceDerivativeForm.patchValue({
-        currentMarketPrices: this.result.currentPrice,
-        strikePrices: this.result.strikePrice,
+        currentMarketPrice: this.result.currentPrice,
+        strikePrice: this.result.strikePrice,
         dateOfTransaction : formatDate(mydate, "yyyy-MM-dd", 'en'),
         expirationDate: this.formatExpirationDate(this.result.expiryDate),
         impliedVolatilityPercentage: this.parseVolatilityValue(this.result.impliedVolatility)
-      });
+      }); 
+      let object = {
+        "symbol" : this.selectedSymbol,
+        "currentMarketPrice": this.result.currentPrice,
+        "strikePrice": this.result.strikePrice,
+        "dateOfTransaction" : formatDate(mydate, "yyyy-MM-dd", 'en'),
+        "expirationDate": this.formatExpirationDate(this.result.expiryDate),
+        "impliedVolatilityPercentage": this.parseVolatilityValue(this.result.impliedVolatility)
+      }
+      this.service.dataEmit(object);
     });
   }
 
@@ -128,6 +141,25 @@ export class DerivativePriceComponent {
 
   parseVolatilityValue(value : any) {
     return value.substring(0, value.length - 1);
+  }
+
+  diffFormula(spot: any, strike: any) {
+    let diff = ((strike - spot) /strike) * 100;
+    return diff;
+  }
+
+  daysDiffFormula(expirationDate: any, dateOfTransaction: any) {
+    const expDate = new Date(expirationDate).valueOf();
+    const transDate = new Date(dateOfTransaction).valueOf();
+    const diffTime = Math.abs(expDate - transDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log(diffDays + " days");
+    return diffDays;
+  }
+
+  timeToExpiryFormula(daysDiff: any) {
+    let timeToExpiry = daysDiff/250;
+    return timeToExpiry;
   }
 
   get priceDerivativeFormControl() {

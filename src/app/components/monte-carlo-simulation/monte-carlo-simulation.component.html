@@ -1,67 +1,53 @@
-<div class="container">
-    <div class="toolbar">
-        <h1>{{title}}</h1>
-    </div>
-    <div class="float-child">
-        <div class="row custom-wrapper">
-            <div class="col-md-12">
-                <form [formGroup]="monteCarloSimulationForm" >
-                    <div class="group-gap">
-                        <div class="d-block my-3">
-                            <div class="mb-3">
-                                <p class="inp-head-option">Symbol</p>
-                                <select class="custom-select" formControlName="symbol" (change)="getSymbolDetail()" [(ngModel)]="selectedSymbol">
-                                    <option value="">Choose symbol</option>
-                                    <option *ngFor="let list of symbols"  [value]="list">
-                                        {{list}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <p class="inp-head-option">Current Market Prices</p>
-                                <input class="custom-select" type="number" formControlName="currentMarketPrices" />
-                            </div>
-                            <div class="mb-3">
-                                <p class="inp-head-option">Exercise Price/Strike Price</p>
-                                <input class="custom-select" type="number" formControlName="strikePrices" />
-                            </div>
-                            <div class="mb-3">
-                                <p class="inp-head-option">Date of Transaction</p>
-                                <input class="custom-select" type="date" id="date" formControlName="dateOfTransaction"/>
-                            </div>
-                            <div class="mb-3">
-                                <p class="inp-head-option">Expiration Date</p>
-                                <input class="custom-select" type="date" id="date" formControlName="expirationDate"/>
-                            </div>
-                            <div class="mb-3">
-                                <p class="inp-head-option">Implied Volatility(%)</p>
-                                <input class="custom-select" type="number" formControlName="impliedVolatilityPercentage"/>
-                            </div>
-                            <div class="mb-3">
-                                <p class="inp-head-option">Simulation path</p>
-                                <select class="custom-select" formControlName="simulationPathList">
-                                    <option *ngFor="let list of simulationPathList" [value]="list.steps">
-                                        {{list.path}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-sm-12">
-                                <div class="input-group">
-                                    <a  id="btn_sub" class="btn brand-btn margin-bottom-30 mr-5" (click)="postPredictData()">
-                                        Calculate Premium
-                                    </a>        
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<form [formGroup]="monteCarloSimulationForm">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Symbol</label>
+            <input type="text" class="form-control" formControlName="symbol" readonly>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Current Market Price</label>
+          <input type="number" class="form-control" formControlName="currentMarketPrice">
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Exercise Price/Strike Price</label>
+                <input type="number" class="form-control" formControlName="strikePrice">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Date of Transaction</label>
+                <input type="date" class="form-control" formControlName="dateOfTransaction">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Expiration Date</label>
+                <input type="date" class="form-control" formControlName="expirationDate"/>
+            </div>      
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Implied Volatility(%)</label>
+                <input type="number" class="form-control" formControlName="impliedVolatilityPercentage"/>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Simulation path</label>
+                <select class="form-control" formControlName="simulationPathList">
+                    <option *ngFor="let list of simulationPathList" [value]="list.steps">
+                        {{list.path}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <a  id="btn_sub" class="btn brand-btn margin-bottom-30 mr-5" (click)="postPredictData()">
+                    Calculate Premium
+                </a> 
+            </div>
+            <div class="col-md-6">
+                <form [formGroup]="resultForm" >
+                    <input type="text" class="form-control" formControlName="valueOfCall">
                 </form>
             </div>
         </div>
-    </div>    
-    <div class="float-child">
-        <form [formGroup]="resultForm" >
-            <p class="inp-head-option">Value of Call</p>
-            <input class="custom-select"  type="text" formControlName="valueOfCall">
-        </form>
     </div>
-</div>
+</form>
+

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -7,8 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class DerivativePriceService {
 
-  apiUrl:string = 'http://127.0.0.1:5015';
+  apiUrl:string = 'http://localhost:5015';
 
+  symbolList = new EventEmitter<object>();
+  valueOfCallResult = new EventEmitter<any>();
   constructor(private http: HttpClient) { }
 
   postPredictData(data: any): Observable<any>{
@@ -26,5 +28,13 @@ export class DerivativePriceService {
     const url = `${this.apiUrl}/neve/symbol/details/${data}`;
     console.log(url);
     return this.http.get<any[]>(url);
+  }
+
+  dataEmit(data:object) {
+    this.symbolList.emit(data);
+  }
+
+  valueofCallEmit(data:any) {
+    this.valueOfCallResult.emit(data);
   }
 }

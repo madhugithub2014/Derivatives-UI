@@ -1,26 +1,36 @@
-.toolbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background-color: #50a1f3;
-    border-bottom:#accff2 4px ridge;
-  }
-  
-  svg#clouds {
-    position: fixed;
-    bottom: -160px;
-    left: -230px;
-    z-index: -10;
-    width: 1920px;
-  }
-  
-  h1{
-    margin-top: 15px;
-    color: white;
-    font-size: 23px;
-    text-align: center;
-    text-shadow: 0 0 3px #bb9c9c, 0 0 5px #0d1824;
-  }
-  
+/* Color of the links BEFORE scroll */
+.navbar-scroll .nav-link {
+  color: #262626;
+  font-size: larger;
+  font-weight: bolder;
+  margin-left: 392px;
+}
+
+/* Color of the navbar BEFORE scroll */
+.navbar-scroll {
+  background-color: #FFC017;
+}
+
+/* Color of the links AFTER scroll */
+.navbar-scrolled .nav-link {
+  color: #262626;
+}
+
+/* Color of the navbar AFTER scroll */
+.navbar-scrolled {
+  background-color: #fff;
+}
+
+/* An optional height of the navbar AFTER scroll */
+.navbar.navbar-scroll.navbar-scrolled {
+  padding-top: auto;
+  padding-bottom: auto;
+}
+.navbar-brand {
+  font-size: unset;
+  height: 3.5rem;
+}
+
+.ms-3 {
+    margin-left: 26rem!important;
+}
