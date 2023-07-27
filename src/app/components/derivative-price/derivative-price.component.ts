@@ -64,7 +64,8 @@ export class DerivativePriceComponent implements OnInit{
       dateOfTransaction : formatDate(this.post.startDate, 'yyyy-MM-dd', 'en'),
       expirationDate: formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'),
       impliedVolatilityPercentage: '0'
-    })
+    });
+    this.resultForm.reset();
   }
 
   resultForm = new FormGroup ({

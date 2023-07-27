@@ -70,7 +70,8 @@ export class MonteCarloSimulationComponent {
       expirationDate: formatDate(this.post.endDate, 'yyyy-MM-dd', 'en'),
       impliedVolatilityPercentage: '0',
       simulationPathList: this.simulationPathList[0].steps
-    })
+    });
+    this.resultForm.reset();
   }
 
   setSymbolDetail() {

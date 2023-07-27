@@ -43,14 +43,14 @@
                 </a> 
             </div>
             <div class="col-md-4">
-                <a  class="btn brand-btn margin-bottom-30 mr-5" (click)="resetForm()">
-                    Clear
-                </a> 
-            </div>
-            <div class="col-md-4">
                 <form [formGroup]="resultForm" >
                     <input type="text" class="form-control" formControlName="valueOfCall">
                 </form>
+            </div>
+            <div class="col-md-4">
+                <a  class="btn brand-btn margin-bottom-30 mr-5" style="margin-left: 107px;" (click)="resetForm()">
+                    Clear
+                </a> 
             </div>
         </div>
     </div>
